@@ -1,7 +1,14 @@
-export interface Estudiante{
+export interface Estudiante {
   idEstudiante: number;
   nombre: string;
   apellido: string;
   codigo: string;
   correo: string;
-  }
+  resultado?: {
+    idEstudiante: number;
+    nombre: string;
+    apellido: string;
+    codigo: string;
+    correo: string;
+  };
+}

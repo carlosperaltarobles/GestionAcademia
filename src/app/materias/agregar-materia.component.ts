@@ -8,42 +8,39 @@ import {
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
-import { Estudiante } from '../interfaces/estudiante.interface';
-import { EstudiantesService } from '../services/estudiantes.service';
+import { Materia } from '../interfaces/materia.interface';
+import { MateriasService } from '../services/materia.service';
 import { parsearErroresAPI } from '../utils/Utilities';
 import { Location } from '@angular/common';
 
 @Component({
-  selector: 'app-agregar-estudiante',
+  selector: 'app-agregar-materia',
   standalone: true,
   imports: [ReactiveFormsModule],
-  templateUrl: './agregar-estudiante.component.html',
-  styleUrl: './estudiantes.component.scss',
+  templateUrl: './agregar-materia.component.html',
+  styleUrl: './materias.component.scss',
 })
-export class AgregarEstudianteComponent implements OnInit {
+export class AgregarMateriaComponent implements OnInit {
   // Creacion de una variable de tipo formgroup (permite hacer manejo del formulario)
   form: FormGroup;
   // Creacion de objeto que se enviara a traves del endpoint
-  formEstudiante: Estudiante;
+  formMateria: Materia;
   // Variable que permite manejar la subscripcion al observable de ruta.
   onRouteStart!: Subscription;
-  // Variable que almacena el ID del estudiante
+  // Variable que almacena el ID del Materia
   id!: number;
   // Inyeccion de dependencias
   private readonly formBuilder = inject(FormBuilder);
-  private readonly estudianteService = inject(EstudiantesService);
+  private readonly MateriaService = inject(MateriasService);
   private readonly router = inject(Router);
   private readonly activedRoute = inject(ActivatedRoute);
   private readonly location = inject(Location);
   constructor() {
-    // Se inicializa el objeto estudiante que se enviara
-    this.formEstudiante = {} as Estudiante;
+    // Se inicializa el objeto Materia que se enviara
+    this.formMateria = {} as Materia;
     // Se inicia el controlador del formulario
     this.form = this.formBuilder.group({
       nombre: ['', [Validators.required]],
-      apellido: ['', [Validators.required]],
-      codigo: ['', [Validators.required]],
-      correo: ['', [Validators.required, Validators.email]],
     });
   }
   ngOnInit(): void {
@@ -55,22 +52,13 @@ export class AgregarEstudianteComponent implements OnInit {
     // Se valida que el valor del id sea mayor a cero y distinto de nulo.
     if (this.id && this.id > 0) {
       // Es edicion
-      // Se consulta la informacion del estudiante, para rellenar el formulario
-      this.estudianteService.obtenerEstudiantes(this.id).subscribe({
+      // Se consulta la informacion del Materia, para rellenar el formulario
+      this.MateriaService.obtenerMaterias(this.id).subscribe({
         next: (temp) => {
-          this.formEstudiante = temp;
+          this.formMateria = temp;
           // Se rellena la informacion del formulario
           this.form.controls['nombre'].setValue(
-            this.formEstudiante.resultado?.nombre
-          );
-          this.form.controls['apellido'].setValue(
-            this.formEstudiante.resultado?.apellido
-          );
-          this.form.controls['codigo'].setValue(
-            this.formEstudiante.resultado?.codigo
-          );
-          this.form.controls['correo'].setValue(
-            this.formEstudiante.resultado?.correo
+            this.formMateria.nombre
           );
         },
         error: (err) => {
@@ -81,10 +69,7 @@ export class AgregarEstudianteComponent implements OnInit {
   }
   onSubmit() {
     // Asignacion de valores
-    this.formEstudiante.nombre = this.form.get('nombre')?.value;
-    this.formEstudiante.apellido = this.form.get('apellido')?.value;
-    this.formEstudiante.codigo = this.form.get('codigo')?.value;
-    this.formEstudiante.correo = this.form.get('correo')?.value;
+    this.formMateria.nombre = this.form.get('nombre')?.value;
     // Mostrar dialogo
     Swal.fire({
       allowOutsideClick: false,
@@ -96,8 +81,8 @@ export class AgregarEstudianteComponent implements OnInit {
     // 1. Si el id existe y es mayor a 0 entonces se debe realizar una actualizacion de datos.
     // 2. Si el id no existe entonces se debe realizar una inserccion
     if (this.id && this.id > 0) {
-      this.estudianteService
-        .actualizarEstudiante(this.id, this.formEstudiante)
+      this.MateriaService
+        .actualizarMateria(this.id, this.formMateria)
         .subscribe({
           // Respuesta exitosa
           next: (temp) => {
@@ -121,7 +106,7 @@ export class AgregarEstudianteComponent implements OnInit {
         });
     } else {
       // Es insercion
-      this.estudianteService.agregarEstudiante(this.formEstudiante).subscribe({
+      this.MateriaService.agregarMateria(this.formMateria).subscribe({
         // Respuesta exitosa
         next: (temp) => {
           Swal.fire('Registrado', 'Registro insertado con éxito', 'success');

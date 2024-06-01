@@ -40,13 +40,12 @@ export class EstudiantesService {
   actualizarEstudiante(id: number, estudiante: Estudiante) {
     // Se arma el objeto a enviar
     let body = {
-      idEstudiante: estudiante.idEstudiante,
       nombre: estudiante.nombre,
       apellido: estudiante.apellido,
       codigo: estudiante.codigo,
       correo: estudiante.correo,
     };
-    return this.http.patch<number>(
+    return this.http.put<number>(
       ENDPOINTS.actualizarEstudiante.replace(':id', id.toString()),
       body
     );

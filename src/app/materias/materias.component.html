@@ -1,0 +1,42 @@
+<div class="container">
+  <div class="d-flex justify-content-between mt-4">
+    <h4>Mantenimiento Materias</h4>
+    <button class="btn btn-success" (click)="navigateToForm()">Agregar</button>
+  </div>
+  <table class="table table-bordered mt-4">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Opciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of lstMaterias; track index; let index = $index) {
+      <tr>
+        <td>{{ item.idMateria }}</td>
+        <td>{{ item.nombre }}</td>
+        <td>
+          <!-- Podemos enviar valores a metodos en el .ts de esta
+  forma-->
+          <button
+            class="btn btn-primary"
+            (click)="updateMateria(item.idMateria)"
+          >
+            Actualizar
+          </button>
+          <!-- Esta es otra forma con la que podemos enviar valores a
+  metodos en el .ts-->
+          <button
+            class="btn btn-danger ml-2"
+            (click)="deleteMateria($event)"
+            value="{{ item.idMateria }}"
+          >
+            Eliminar
+          </button>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>
